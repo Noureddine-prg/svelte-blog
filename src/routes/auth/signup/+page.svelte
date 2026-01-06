@@ -3,6 +3,7 @@
 	import { authClient } from '$lib/auth-client';
 	import { resolve } from '$app/paths';
 
+	console.log('page load');
 	let error = $state('');
 
 	let signup = async (e: Event) => {
@@ -36,8 +37,6 @@
 				}
 			}
 		);
-
-		console.log('error');
 	};
 </script>
 
