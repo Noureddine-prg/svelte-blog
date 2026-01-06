@@ -1,0 +1,78 @@
+<script lang="ts">
+	import { goto } from '$app/navigation';
+	import { authClient } from '$lib/auth-client';
+	import { resolve } from '$app/paths';
+
+	let error = $state('');
+
+	let signup = async (e: Event) => {
+		e.preventDefault();
+
+		const form = e.target as HTMLFormElement;
+		const username = form.username.value;
+		const email = form.email.value;
+		const password = form.password.value;
+		const password_confirm = form.password_confirm.value;
+
+		if (password != password_confirm) {
+			error = "Passwords don't match";
+			return;
+		}
+
+		if (!username || !email || !password || !password_confirm) {
+			error = 'All fields required';
+			return;
+		}
+
+		await authClient.signUp.email(
+			{
+				email,
+				password,
+				name: username
+			},
+			{
+				onSuccess: async () => {
+					goto(resolve('/'));
+				}
+			}
+		);
+
+		console.log('error');
+	};
+</script>
+
+<h1>Sign Up</h1>
+
+<form onsubmit={signup}>
+	<div class="row">
+		<label>
+			Username:
+			<input required type="username" id="username" />
+		</label>
+	</div>
+
+	<div class="row">
+		<label>
+			Email:
+			<input required type="email" id="email" />
+		</label>
+	</div>
+
+	<div class="row">
+		<label>
+			Password:
+			<input required type="password" id="password" />
+		</label>
+	</div>
+
+	<div class="row">
+		<label>
+			Confirm Password:
+			<input required type="password" id="password_confirm" />
+		</label>
+	</div>
+	{#if error}
+		<p style:color="var(--red)">{error}</p>
+	{/if}
+	<button type="submit">Sign Up</button>
+</form>
